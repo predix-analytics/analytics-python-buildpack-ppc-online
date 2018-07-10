@@ -25,7 +25,10 @@ if [ ! -f $GoInstallDir/go/bin/go ]; then
   
   echo "-----> Copying go 1.9.1 to go installation folder"
   SCRIPTDIR="$(dirname "$0")"
-  tar xzf $SCRIPTDIR/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir
+   pwd
+  echo $SCRIPTDIR
+  ls -ltr 
+  tar xzvf $SCRIPTDIR/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir 
 
 fi
 if [ ! -f $GoInstallDir/go/bin/go ]; then
