@@ -27,6 +27,8 @@ if [ ! -f $GoInstallDir/go/bin/go ]; then
   SCRIPTDIR="$(dirname "$0")"
    pwd
   echo $SCRIPTDIR
+  BUILDPACK_PATH=$(dirname $(readlink -f ${BASH_SOURCE%/*}))
+  echo $BUILDPACK_PATH
   ls -ltr 
   tar xzvf $SCRIPTDIR/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir 
 
