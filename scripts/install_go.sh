@@ -24,7 +24,8 @@ if [ ! -f $GoInstallDir/go/bin/go ]; then
   #rm /tmp/go.tar.gz
   
   echo "-----> Copying go 1.9.1 to go installation folder"
-  tar xzf scripts/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir
+  SCRIPTDIR="$(dirname "$0")"
+  tar xzf $SCRIPTDIR/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir
 
 fi
 if [ ! -f $GoInstallDir/go/bin/go ]; then
