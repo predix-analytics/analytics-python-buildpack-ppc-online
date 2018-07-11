@@ -265,10 +265,16 @@ func (s *Supplier) InstallPython() error {
 	}
 
 	pythonInstallDir := filepath.Join(s.Stager.DepDir(), "python")
-	if err := s.Manifest.InstallDependency(dep, pythonInstallDir); err != nil {
-		return err
-	}
-
+	#if err := s.Manifest.InstallDependency(dep, pythonInstallDir); err != nil {
+	#	return err
+	#}
+	
+	echo "-----> Installing python from vendoring folder to pythonInstallDir"
+        pwd
+ 	BUILDPACK_PATH=$(dirname $(readlink -f ${BASH_SOURCE%/*}))
+  	echo $BUILDPACK_PATH
+	tar xzvf $BUILDPACK_PATH/src/python/vendor/python-2.7.14-linux-x64-30d9c08f.tgz -C $pythonInstallDir
+	
 	if err := s.Stager.LinkDirectoryInDepDir(filepath.Join(pythonInstallDir, "bin"), "bin"); err != nil {
 		return err
 	}
