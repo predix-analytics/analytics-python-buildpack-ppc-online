@@ -7,30 +7,28 @@ export GoInstallDir="/tmp/go$GO_VERSION"
 mkdir -p $GoInstallDir
 
 if [ ! -f $GoInstallDir/go/bin/go ]; then
-  #GO_MD5="0571886e9b9ba07773b542a11e9859a4"
-  #URL=https://buildpacks.cloudfoundry.org/dependencies/go/go${GO_VERSION}.linux-amd64-${GO_MD5:0:8}.tar.gz
+  GO_MD5="0571886e9b9ba07773b542a11e9859a4"
+  URL=https://buildpacks.cloudfoundry.org/dependencies/go/go${GO_VERSION}.linux-amd64-${GO_MD5:0:8}.tar.gz
 
-  #echo "-----> Download go ${GO_VERSION}"
-  #curl -s -L --retry 15 --retry-delay 2 $URL -o /tmp/go.tar.gz
+  echo "-----> Download go ${GO_VERSION}"
+  curl -s -L --retry 15 --retry-delay 2 $URL -o /tmp/go.tar.gz
 
-  #DOWNLOAD_MD5=$(md5sum /tmp/go.tar.gz | cut -d ' ' -f 1)
+  DOWNLOAD_MD5=$(md5sum /tmp/go.tar.gz | cut -d ' ' -f 1)
 
-  #if [[ $DOWNLOAD_MD5 != $GO_MD5 ]]; then
-    #echo "       **ERROR** MD5 mismatch: got $DOWNLOAD_MD5 expected $GO_MD5"
-    #exit 1
-  #fi
+  if [[ $DOWNLOAD_MD5 != $GO_MD5 ]]; then
+    echo "       **ERROR** MD5 mismatch: got $DOWNLOAD_MD5 expected $GO_MD5"
+    exit 1
+  fi
 
-  #tar xzf /tmp/go.tar.gz -C $GoInstallDir
-  #rm /tmp/go.tar.gz
+  tar xzf /tmp/go.tar.gz -C $GoInstallDir
+  rm /tmp/go.tar.gz
   
-  echo "-----> Copying go 1.9.1 to go installation folder"
-  SCRIPTDIR="$(dirname "$0")"
-   pwd
-  echo $SCRIPTDIR
-  BUILDPACK_PATH=$(dirname $(readlink -f ${BASH_SOURCE%/*}))
-  echo $BUILDPACK_PATH
-  ls -ltr 
-  tar xzvf $BUILDPACK_PATH/scripts/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir 
+  #echo "-----> Copying go 1.9.1 to go installation folder"
+  #pwd
+  #BUILDPACK_PATH=$(dirname $(readlink -f ${BASH_SOURCE%/*}))
+  #echo $BUILDPACK_PATH
+  #ls -ltr 
+  #tar xzvf $BUILDPACK_PATH/scripts/go1.9.1.linux-amd64.tar.gz -C $GoInstallDir 
 
 fi
 if [ ! -f $GoInstallDir/go/bin/go ]; then
