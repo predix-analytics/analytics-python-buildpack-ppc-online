@@ -13,6 +13,7 @@ import (
 	"python/pipfile"
 	"regexp"
 	"strings"
+	"archive/zip"
 
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/snapshot"
