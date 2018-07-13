@@ -273,7 +273,11 @@ func (s *Supplier) InstallPython() error {
 	if err != nil {
 		return err
 	}
-	s.unzip(python27FilePath, pythonInstallDir)
+	if python27FileExists {
+		s.unzip(python27FilePath, pythonInstallDir)
+	} else {
+		s.Log.Error("Python 2.7.14 tgz file %s not exists", python27FilePath)
+	}
 	
 	if err := s.Stager.LinkDirectoryInDepDir(filepath.Join(pythonInstallDir, "bin"), "bin"); err != nil {
 		return err
