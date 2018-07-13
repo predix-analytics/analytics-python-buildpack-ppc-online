@@ -266,7 +266,15 @@ func (s *Supplier) InstallPython() error {
 	}
 
 	pythonInstallDir := filepath.Join(s.Stager.DepDir(), "python")
-	python27FilePath := filepath.Join(filepath.Join(s.Manifest.BUILDPACK_PATH(), "src/pythone/vendor/python-2.7.14-linux-x64-30d9c08f.tgz"))
+	python27FilePath := filepath.Join(filepath.Join(s.Stager.DepDir(), "vendor/python-2.7.14-linux-x64-30d9c08f.tgz"))
+	
+	pwd, err := os.Getwd()
+        if err != nil {
+        	fmt.Println(err)
+        	os.Exit(1)
+   	 }
+    	fmt.Println(pwd)
+	
 	
         s.Log.BeginStep("Installing python from vendor folder to pythonInstallDir")
 	python27FileExists, err := libbuildpack.FileExists(python27FilePath)
