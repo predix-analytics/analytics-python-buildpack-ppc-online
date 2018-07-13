@@ -324,7 +324,7 @@ func unzip(src, dest string) error {
 
             err = os.MkdirAll(fdir, f.Mode())
             if err != nil {
-                log.Fatal(err)
+                s.Log.Error(err)
                 return err
             }
             f, err := os.OpenFile(
