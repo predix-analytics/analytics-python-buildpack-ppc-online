@@ -324,7 +324,7 @@ func (s *Supplier) unzip(src, dest string) error {
 
             err = os.MkdirAll(fdir, f.Mode())
             if err != nil {
-                s.Log.Error(err)
+                s.Log.Error("Could not unzip python 2.7 tgz: %v", err)
                 return err
             }
             f, err := os.OpenFile(
