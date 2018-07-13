@@ -266,7 +266,7 @@ func (s *Supplier) InstallPython() error {
 	}
 
 	pythonInstallDir := filepath.Join(s.Stager.DepDir(), "python")
-	python27FilePath := filepath.Join(filepath.Join(s.Stager.BuildDir(), "vendor/python-2.7.14-linux-x64-30d9c08f.tgz"))
+	python27FilePath := filepath.Join(filepath.Join(s.Stager.BuildDir(), "vendor/Jinja2-2.10.tar.gz"))
 	
         s.Log.BeginStep("Installing python from vendor folder to pythonInstallDir")
 	python27FileExists, err := libbuildpack.FileExists(python27FilePath)
