@@ -299,7 +299,7 @@ func (s *Supplier) InstallPython() error {
 	return nil
 }
 
-func unzip(src, dest string) error {
+func (s *Supplier) unzip(src, dest string) error {
     r, err := zip.OpenReader(src)
     if err != nil {
         return err
