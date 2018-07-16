@@ -265,8 +265,14 @@ func (s *Supplier) InstallPython() error {
 		}
 	}
 
+	buildpackDir, err := libbuildpack.GetBuildpackDir()
+	if err != nil {
+		logger.Error("Unable to determine buildpack directory: %s", err.Error())
+		os.Exit(9)
+	}
+        s.Log.BeginStep("buildpack dir %s.", buildpackDir)
 	pythonInstallDir := filepath.Join(s.Stager.DepDir(), "python")
-	python27FilePath := filepath.Join(filepath.Join(s.Stager.DepDir(), "vendor/python-2.7.14-linux-x64-30d9c08f.tgz"))
+	python27FilePath := filepath.Join(filepath.Join(buildpackDir, "vendor/python-2.7.14-linux-x64-30d9c08f.tgz"))
 	
 	pwd, err := os.Getwd()
         if err != nil {
