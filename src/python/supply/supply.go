@@ -267,7 +267,7 @@ func (s *Supplier) InstallPython() error {
 
 	buildpackDir, err := libbuildpack.GetBuildpackDir()
 	if err != nil {
-		logger.Error("Unable to determine buildpack directory: %s", err.Error())
+		s.Log.Error("Unable to determine buildpack directory: %s", err)
 		os.Exit(9)
 	}
         s.Log.BeginStep("buildpack dir %s.", buildpackDir)
@@ -280,7 +280,6 @@ func (s *Supplier) InstallPython() error {
         	os.Exit(1)
    	 }
     	fmt.Println(pwd)
-	
 	
         s.Log.BeginStep("Installing python from vendor folder to pythonInstallDir")
 	python27FileExists, err := libbuildpack.FileExists(python27FilePath)
