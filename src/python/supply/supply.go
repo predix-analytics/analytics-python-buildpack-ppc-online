@@ -14,6 +14,7 @@ import (
 	"regexp"
 	"strings"
 	"archive/zip"
+	"compress/gzip"
 
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/snapshot"
@@ -318,54 +319,60 @@ func (s *Supplier) InstallPython() error {
 	return nil
 }
 
-func (s *Supplier) unzip(src string, dest string) error {
-	
+
+func (s *Supplier) unzip(src string, dest string) ([]string, error) {
     s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
+    var filenames []string
+
     r, err := zip.OpenReader(src)
     if err != nil {
-        return err
+        return filenames, err
     }
     defer r.Close()
 
     for _, f := range r.File {
+
         rc, err := f.Open()
         if err != nil {
-            return err
+            return filenames, err
         }
         defer rc.Close()
 
+        // Store filename/path for returning and using later on
         fpath := filepath.Join(dest, f.Name)
-	s.Log.BeginStep("File path: %s", fpath)
- 
+        filenames = append(filenames, fpath)
+
         if f.FileInfo().IsDir() {
-            os.MkdirAll(fpath, f.Mode())
+
+            // Make Folder
+            os.MkdirAll(fpath, os.ModePerm)
+
         } else {
-            var fdir string
-            if lastIndex := strings.LastIndex(fpath,string(os.PathSeparator)); lastIndex > -1 {
-                fdir = fpath[:lastIndex]
+
+            // Make File
+            if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
+                return filenames, err
             }
 
-            err = os.MkdirAll(fdir, f.Mode())
+            outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
             if err != nil {
-                s.Log.Error("Could not make dir: %s, %v", fdir, err)
-                return err
+                return filenames, err
             }
-            f, err := os.OpenFile(
-                fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-            if err != nil {
-                return err
-            }
-            defer f.Close()
 
-            _, err = io.Copy(f, rc)
+            _, err = io.Copy(outFile, rc)
+
+            // Close the file without defer to close before next iteration of loop
+            outFile.Close()
+
             if err != nil {
-                return err
+                return filenames, err
             }
+
         }
     }
-    s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
-    return nil
+    return filenames, nil
 }
+
 func (s *Supplier) RewriteShebangs() error {
 	files, err := filepath.Glob(filepath.Join(s.Stager.DepDir(), "bin", "*"))
 	if err != nil {
