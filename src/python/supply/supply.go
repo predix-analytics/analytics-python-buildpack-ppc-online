@@ -591,7 +591,7 @@ func (s *Supplier) InstallOnlyVersion(src string, dest string) error {
 	} else {
 		s.Log.Error("File %s not exists", srcFilePath)
 	}
-	
+	return nil
 }
 
 func (s *Supplier) UninstallUnusedDependencies() error {
