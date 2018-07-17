@@ -361,7 +361,7 @@ func (s *Supplier) unzip(src string, dest string) error {
             }
         }
     }
-    s.Log.EndStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
+    s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
     return nil
 }
 func (s *Supplier) RewriteShebangs() error {
