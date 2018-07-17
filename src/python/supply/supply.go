@@ -293,7 +293,7 @@ func (s *Supplier) InstallPython() error {
    		if err != nil {
        			return err
    		}
-		fmt.Println("Number of Unzipped python 2..14 files:\n" + len(files))
+		fmt.Println("Number of Unzipped python 2.7.14 files:\n" + len(files))
 		
 	} else {
 		s.Log.Error("Python 2.7.14 tgz file %s not exists", python27FilePath)
@@ -538,11 +538,18 @@ func (s *Supplier) HandleFfi() error {
 }
 
 func (s *Supplier) InstallPip() error {
+	
+	m := make(map[string]string)
+	m["setuptools"] = "setuptools-39.1.0-c5484e13.zip"
+	//m["pip"] = ""
+	
 	for _, name := range []string{"setuptools", "pip"} {
-		if err := s.Manifest.InstallOnlyVersion(name, filepath.Join("/tmp", name)); err != nil {
+		if err := s.InstallOnlyVersion(m[name], name); err != nil {
 			return err
 		}
+		
 		versions := s.Manifest.AllDependencyVersions(name)
+		s.Log.BeginStep("InstallPip() All %s versions: %s", name, versions)
 		outWriter := new(bytes.Buffer)
 		if err := s.Command.Execute(filepath.Join("/tmp", name, name+"-"+versions[0]), ioutil.Discard, ioutil.Discard, "python", "setup.py", "install", fmt.Sprintf("--prefix=%s", filepath.Join(s.Stager.DepDir(), "python"))); err != nil {
 			s.Log.Error(outWriter.String())
@@ -560,6 +567,31 @@ func (s *Supplier) InstallPip() error {
 	}
 
 	return nil
+}
+
+func (s *Supplier) InstallOnlyVersion(src string, dest string) error {
+	
+	s.Log.BeginStep("buildpack dir %s.", buildpackDir)
+	installDir := filepath.Join("/tmp", dest)
+\	srcFilePath := filepath.Join(filepath.Join(buildpackDir, "src/python/vendor/", src))
+		
+	s.Log.BeginStep("Installing %s from vendor folder to %s", srcFilePath, installDir)
+	srcFileExists, err := libbuildpack.FileExists(setuptoolsFilePath)
+	if err != nil {
+		return err
+	}
+	if srcFileExists {
+		s.Log.BeginStep("Unzipping file %s to %s", srcFilePath, installDir)
+		files, err := s.Unzip(srcFilePath, installDir)
+   		if err != nil {
+       			return err
+   		}
+		fmt.Println("Number of unzipped files:\n" + len(files))
+		
+	} else {
+		s.Log.Error("File %s not exists", srcFilePath)
+	}
+	
 }
 
 func (s *Supplier) UninstallUnusedDependencies() error {
