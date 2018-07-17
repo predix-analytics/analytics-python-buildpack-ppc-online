@@ -14,7 +14,6 @@ import (
 	"regexp"
 	"strings"
 	"archive/zip"
-	"compress/gzip"
 
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/snapshot"
@@ -289,7 +288,13 @@ func (s *Supplier) InstallPython() error {
 		return err
 	}
 	if python27FileExists {
-		s.unzip(python27FilePath, pythonInstallDir)
+		s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
+		files, err := s.Unzip(python27FilePath, pythonInstallDir)
+   		if err != nil {
+       			log.Fatal(err)
+   		}
+   		fmt.Println("Unzipped:\n" + strings.Join(files, "\n"))
+		
 	} else {
 		s.Log.Error("Python 2.7.14 tgz file %s not exists", python27FilePath)
 	}
@@ -320,8 +325,7 @@ func (s *Supplier) InstallPython() error {
 }
 
 
-func (s *Supplier) unzip(src string, dest string) ([]string, error) {
-    s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
+func (s *Supplier) Unzip(src string, dest string) ([]string, error) {
     var filenames []string
 
     r, err := zip.OpenReader(src)
