@@ -272,7 +272,8 @@ func (s *Supplier) InstallPython() error {
 	}
         s.Log.BeginStep("buildpack dir %s.", buildpackDir)
 	pythonInstallDir := filepath.Join(s.Stager.DepDir(), "python")
-	python27FilePath := filepath.Join(filepath.Join(buildpackDir, "src/python/vendor/python-2.7.14-linux-x64-30d9c08f.tgz"))
+	s.Log.BeginStep("python install dir %s.", pythonInstallDir)
+	python27FilePath := filepath.Join(filepath.Join(buildpackDir, "src/python/vendor/python-2.7.14-linux-x64-30d9c08f.tar.gz"))
 	
 	pwd, err := os.Getwd()
         if err != nil {
@@ -312,6 +313,7 @@ func (s *Supplier) InstallPython() error {
 	if err := os.Setenv("PYTHONPATH", filepath.Join(s.Stager.DepDir())); err != nil {
 		return err
 	}
+	s.Log.BeginStep("COMPLETED - Installing python from vendor folder to pythonInstallDir: %s", pythonInstallDir)
 
 	return nil
 }
