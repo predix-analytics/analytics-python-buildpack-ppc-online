@@ -281,7 +281,7 @@ func (s *Supplier) InstallPython() error {
    	 }
     	fmt.Println(pwd)
 	
-        s.Log.BeginStep("Installing python from vendor folder to pythonInstallDir")
+	s.Log.BeginStep("Installing python from vendor folder to pythonInstallDir: %s", pythonInstallDir)
 	python27FileExists, err := libbuildpack.FileExists(python27FilePath)
 	if err != nil {
 		return err
@@ -316,7 +316,9 @@ func (s *Supplier) InstallPython() error {
 	return nil
 }
 
-func (s *Supplier) unzip(src, dest string) error {
+func (s *Supplier) unzip(src string, dest string) error {
+	
+    s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
     r, err := zip.OpenReader(src)
     if err != nil {
         return err
@@ -331,6 +333,8 @@ func (s *Supplier) unzip(src, dest string) error {
         defer rc.Close()
 
         fpath := filepath.Join(dest, f.Name)
+	s.Log.BeginStep("File path: %s", fpath)
+ 
         if f.FileInfo().IsDir() {
             os.MkdirAll(fpath, f.Mode())
         } else {
@@ -341,7 +345,7 @@ func (s *Supplier) unzip(src, dest string) error {
 
             err = os.MkdirAll(fdir, f.Mode())
             if err != nil {
-                s.Log.Error("Could not unzip python 2.7 tgz: %v", err)
+                s.Log.Error("Could not make dir: %s, %v", fdir, err)
                 return err
             }
             f, err := os.OpenFile(
@@ -357,6 +361,7 @@ func (s *Supplier) unzip(src, dest string) error {
             }
         }
     }
+    s.Log.EndStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
     return nil
 }
 func (s *Supplier) RewriteShebangs() error {
