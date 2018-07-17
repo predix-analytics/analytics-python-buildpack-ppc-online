@@ -293,7 +293,7 @@ func (s *Supplier) InstallPython() error {
    		if err != nil {
        			return err
    		}
-   		fmt.Println("Unzipped:\n" + strings.Join(files, "\n"))
+		fmt.Println("Number of Unzipped python 2..14 files:\n" + len(files))
 		
 	} else {
 		s.Log.Error("Python 2.7.14 tgz file %s not exists", python27FilePath)
