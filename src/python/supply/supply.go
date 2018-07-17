@@ -293,8 +293,7 @@ func (s *Supplier) InstallPython() error {
    		if err != nil {
        			return err
    		}
-		fmt.Println("Number of Unzipped python 2.7.14 files:\n" + len(files))
-		
+		fmt.Println("Number of Unzipped python 2.7.14 files:", len(files))	
 	} else {
 		s.Log.Error("Python 2.7.14 tgz file %s not exists", python27FilePath)
 	}
@@ -570,13 +569,19 @@ func (s *Supplier) InstallPip() error {
 }
 
 func (s *Supplier) InstallOnlyVersion(src string, dest string) error {
-	
+
+	buildpackDir, err := libbuildpack.GetBuildpackDir()
+	if err != nil {
+		s.Log.Error("Unable to determine buildpack directory: %s", err)
+		os.Exit(9)
+	}
+
 	s.Log.BeginStep("buildpack dir %s.", buildpackDir)
 	installDir := filepath.Join("/tmp", dest)
-\	srcFilePath := filepath.Join(filepath.Join(buildpackDir, "src/python/vendor/", src))
+	srcFilePath := filepath.Join(filepath.Join(buildpackDir, "src/python/vendor/", src))
 		
 	s.Log.BeginStep("Installing %s from vendor folder to %s", srcFilePath, installDir)
-	srcFileExists, err := libbuildpack.FileExists(setuptoolsFilePath)
+	srcFileExists, err := libbuildpack.FileExists(srcFilePath)
 	if err != nil {
 		return err
 	}
@@ -586,8 +591,7 @@ func (s *Supplier) InstallOnlyVersion(src string, dest string) error {
    		if err != nil {
        			return err
    		}
-		fmt.Println("Number of unzipped files:\n" + len(files))
-		
+		fmt.Println("Number of unzipped files:", len(files))		
 	} else {
 		s.Log.Error("File %s not exists", srcFilePath)
 	}
