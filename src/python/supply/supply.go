@@ -291,7 +291,7 @@ func (s *Supplier) InstallPython() error {
 		s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", python27FilePath, pythonInstallDir)
 		files, err := s.Unzip(python27FilePath, pythonInstallDir)
    		if err != nil {
-       			s.Log.Fatal(err)
+       			return err
    		}
    		fmt.Println("Unzipped:\n" + strings.Join(files, "\n"))
 		
