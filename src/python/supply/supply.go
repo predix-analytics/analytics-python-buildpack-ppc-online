@@ -288,7 +288,7 @@ func (s *Supplier) InstallPython() error {
 		return err
 	}
 	if python27FileExists {
-		s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", src, dest)
+		s.Log.BeginStep("Unzipping file %s to pythonInstallDir: %s", python27FilePath, pythonInstallDir)
 		files, err := s.Unzip(python27FilePath, pythonInstallDir)
    		if err != nil {
        			log.Fatal(err)
