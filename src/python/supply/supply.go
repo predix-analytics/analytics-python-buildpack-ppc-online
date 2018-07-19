@@ -539,7 +539,7 @@ func (s *Supplier) HandleFfi() error {
 func (s *Supplier) InstallPip() error {
 	
 	m := make(map[string]string)
-	m["setuptools"] = "setuptools-39.1.0-c5484e13.zip"
+	m["setuptools"] = "setuptools-39.1.0.zip"
 	//m["pip"] = ""
 	
 	for _, name := range []string{"setuptools", "pip"} {
@@ -550,13 +550,15 @@ func (s *Supplier) InstallPip() error {
 		versions := s.Manifest.AllDependencyVersions(name)
 		s.Log.BeginStep("InstallPip() All %s versions: %s", name, versions)
 		outWriter := new(bytes.Buffer)
+		s.Log.BeginStep("Execute filepath: %s, python path: ", filepath.Join("/tmp", name, name+"-"+versions[0]), filepath.Join(s.Stager.DepDir())
 		if err := s.Command.Execute(filepath.Join("/tmp", name, name+"-"+versions[0]), ioutil.Discard, ioutil.Discard, "python", "setup.py", "install", fmt.Sprintf("--prefix=%s", filepath.Join(s.Stager.DepDir(), "python"))); err != nil {
 			s.Log.Error(outWriter.String())
 			return err
 		}
 	}
-
 	for _, dir := range []string{"bin", "lib", "include"} {
+		s.Log.BeginStep("Linking dir %s", filepath.Join(s.Stager.DepDir(), "python", dir))
+
 		if err := s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "python", dir), dir); err != nil {
 			return err
 		}
