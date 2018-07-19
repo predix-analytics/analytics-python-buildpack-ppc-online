@@ -550,7 +550,7 @@ func (s *Supplier) InstallPip() error {
 		versions := s.Manifest.AllDependencyVersions(name)
 		s.Log.BeginStep("InstallPip() All %s versions: %s", name, versions)
 		outWriter := new(bytes.Buffer)
-		s.Log.BeginStep("Execute filepath: %s, python path: ", filepath.Join("/tmp", name, name+"-"+versions[0]), filepath.Join(s.Stager.DepDir())
+		s.Log.BeginStep("Execute filepath: %s, python path: %s ", filepath.Join("/tmp", name, name+"-"+versions[0]), filepath.Join(s.Stager.DepDir(), "python"))
 		if err := s.Command.Execute(filepath.Join("/tmp", name, name+"-"+versions[0]), ioutil.Discard, ioutil.Discard, "python", "setup.py", "install", fmt.Sprintf("--prefix=%s", filepath.Join(s.Stager.DepDir(), "python"))); err != nil {
 			s.Log.Error(outWriter.String())
 			return err
